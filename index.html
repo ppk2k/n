@@ -1,674 +1,117 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portal Kode Akses Matrix</title>
-  <style>
-    body {
-      font-family: 'Courier New', Courier, monospace;
-      background-color: black;
-      color: green;
-      margin: 0;
-      padding: 0;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      text-align: center;
-      overflow: hidden;
-    }
-
-    h1 {
-      font-size: 36px;
-      color: green;
-    }
-
-    #inputContainer {
-      margin-top: 50px;
-    }
-
-    input {
-      background-color: black;
-      color: green;
-      font-size: 20px;
-      padding: 10px;
-      border: 2px solid green;
-      width: 300px;
-      text-align: center;
-    }
-
-    button {
-      background-color: black;
-      color: green;
-      font-size: 20px;
-      padding: 10px;
-      border: 2px solid green;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-
-    button:hover {
-      background-color: green;
-      color: black;
-    }
-
-    #errorMessage {
-      color: red;
-      font-size: 18px;
-      margin-top: 20px;
-    }
-
-    /* Matrix effect styling */
-    .matrix {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: black;
-      color: green;
-      font-size: 20px;
-      font-family: 'Courier New', monospace;
-      overflow: hidden;
-      z-index: -1;
-    }
-
-    .matrix span {
-      position: absolute;
-      bottom: 0;
-      animation: fall 5s infinite linear;
-    }
-
-    @keyframes fall {
-      0% {
-        transform: translateY(-100vh);
-      }
-      100% {
-        transform: translateY(100vh);
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix Themed Website</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>Portal Akses Matrix</h1>
-  <p>Masukkan kode akses 20 digit untuk melanjutkan.</p>
-
-  <div id="inputContainer">
-    <input type="text" id="accessCode" placeholder="Masukkan kode akses" maxlength="20">
-    <button onclick="validateCode()">Akses Halaman</button>
-    <p id="errorMessage"></p>
-  </div>
-
-  <div class="matrix" id="matrix"></div>
-
-  <script>
-    // Daftar kode akses dan halaman terkait
-    const validCodes = {
-  'r9Y1F7L2X0P3D5m8X6': 'Ελένη.html',
-  'k4Y7P1L9X2D5R0F3m6': 'Мария.html',
-  'n5X2P1Y7L9R0F3D8m6': '李娜.html',
-  'w7F1X0L3P9Y5R2D8m6': 'さくら.html',
-  'p6X9Y2F1L3D7R0L8m5': '김지영.html',
-  'q3P9X7Y1L0D2R5F8m6': '김영숙.html',
-  's5F2X9P1L7Y0R6D3m8': 'นิตยา.html',
-  'v1P6X7Y9L2R3F0D8m5': 'सिता.html',
-  'b9F1X0P7L3Y2R6D5m8': 'アヤカ.html',
-  'l0X3F7Y9P1R2L6D5m8': 'Анна.html',
-  'j5F0X9P1Y3L7R2D8m6': '赵丽.html',
-  'x4L9Y0P3R7F1D2X8m6': '静香.html',
-  'r3Y1P5X8L2D7F9R0m6': 'Римма.html',
-  'k2F3X7Y0L1P9D5R8m6': '박선영.html',
-  'w9F1X2L0Y7P3D6R8m5': '리혜경.html',
-  'u7P1X3Y5L2D7R9F8m6': 'เพ็ญศรี.html',
-  't4X9Y1P0L6R3D5F2m8': 'पार्वती.html',
-  'b7F9L1P2Y3X0R8D5m6': 'Χαρά.html',
-  'n4X9Y0P1L7R6D2F5m8': 'Татьяна.html',
-  'x2F7Y3P5L1D0R9X8m6': '王娜.html',
-  't1P8F7L2X9Y0R3D6m5': 'ユウコ.html',
-  'w9X1L2P3Y5R7D0F8m6': '임수정.html',
-  'v4F0Y7X9L3R2P1D5m8': '李英姫.html',
-  'b1P3Y2L0F7X9R6D8m5': 'มณีรัตน์.html',
-  'm8Y4X0F7L3R1P9D2m6': 'गोमा.html',
-  's6X9Y0P3L5F1R2D8m7': 'Αλεξάνδρα.html',
-  'j2F3L9Y7P0X1R5D8m6': 'Светлана.html',
-  'r5P1X0Y6L9D3F8m7X2': '邓丽君.html',
-  'x1P9L7Y4F3D2R6X8m5': 'Αθηνά.html',
-  't3Y2F5X0P1L7D8R9X6': 'Тамара.html',
-  'k9P0L1F7X5Y2R3D8X4': '李小龙.html',
-  'b8X2P3L5Y1F7D6R9X0': '미나.html',
-  'p7Y9L2F1X6D0R5X3M8': '아라.html',
-  'm3P5X1F7Y2R9L8D0X4': '冯雪琴.html',
-  'r6Y2P9L0F1X3D7Y8R5': 'Ксения.html',
-  's4X5Y1F7L9P3D0R6X2': '장미숙.html',
-  't0P9Y3F7L1R6X5D2M8': '에밀리아.html',
-  'k2Y3P7F9L0X1D4R6M5': '王丽娜.html',
-  'b5X8P3Y9L0F1R2D6X4': 'Κατερίνα.html',
-  'p9L0X7Y2F3R1D6X5M8': '克拉拉.html',
-  't2F1X9P0Y7R3L5D6X8': 'Наталья.html',
-  'k1X5Y7P3L0F9R2D8M6': '피지아.html',
-  'r4Y0F2P3X7L1Y9D6X5': '에르나.html',
-  'm9P2X3L0Y1F5D7R4X6': '张婷.html',
-  't7Y1F6X9L2P5R0D8X3': 'Юлия.html',
-  'b4P8X0Y9F2L3D7R5X6': '刘明华.html',
-  's7X2Y4P9L0F3D6R1X5': 'Шарлотта.html',
-  'k5F2P3L9X7Y0R6D8M1': '양혜영.html',
-  'r2P3Y5L8F1X7D6R9M4': '孙婷.html',
-  'm3Y9F2X0P7L1D6R5X8': 'Валентина.html',
-  's0F8Y3P1X7L2D5R9M6': '소영.html',
-  't5Y7F1P3L2X0R6D9X4': '라희.html',
-  'k4Y0F9L1X3P7R5D8M2': '赵晴天.html',
-  'r8X2P1F6L9Y3D0R7M5': 'София.html',
-  'm5P1X3Y7L9F0R2D6X8': '미래.html',
-  's1X9P7Y2F3L8D0R5M4': '白梅.html',
-  't6Y1F0P8L7X2D3R9X5': 'Елена.html',
-  'b0X7F2Y5L9P3R1D4X8': '리나.html',
-  'p4Y2X1F3L9P6D7R5M0': '王丽.html',
-  't9F3Y6P7L1R5X0D4X2': '소라.html',
-  'k8P4Y1F7X2L9D0R3M5': 'Татьяна.html',
-  'r7F1Y3L5P9X0D2R8M4': '이진영.html',
-  's9X2Y1P5L7F3D6R8M0': '나영.pdf',
-  't0P1X9F2Y3L4R5D7X6': '冯晓慧.html',
-  'b2X3Y1F0L9P7D4R8M5': '알렉산드라.html',
-  's7P2F0Y4L5R1X9D3X6': '郑小英.html',
-  't2Y3P4F0L9X5D8R1M6': '샤오메이.html'
-'qK15pqTDE8PApwFdmhYZ': 'Ελένη.html',
-'lY8Qf5vnnFWuGCRicIaA': 'Мария.html',
-'d1N42cfCZniYhgQIIsXx': '李娜.html',
-'G1BwZeXNRhNAP3pbNelO': 'さくら.html',
-'jJBLho6DWy4ow5EIpys7': '김지영.html',
-'q9GwAg7ngC9sSZ1pwy6y': '김영숙.html',
-'QNX0youv3uOi7jLeyOoG': 'นิตยา.html',
-'Y7PWALt37QWHZwDu1Fpf': 'सिता.html',
-'3aMGbv2cL4uKptunVVZL': 'アヤカ.html',
-'K0ipL9F64soThmlkser3': 'Анна.html',
-'NLX54pGjAX7rTZjvaYRs': '赵丽.html',
-'RMCN4lAW03orQWp38YCM': '静香.html',
-'fK1FrHZBXQZhJavbn8J1': 'Римма.html',
-'dFbooK3vVFks8bbjEOSj': '박선영.html',
-'u0Ml1DRKNeFm3TINIZtD': '리혜경.html',
-'iqoeeXmjHFhE4BOYvajG': 'เพ็ญศรี.html',
-'YoTsXGtASYfQUqtKXGFB': 'पार्वती.html',
-'6npSyypOdsZxBPpYZNXR': 'Χαρά.html',
-'xpJQLtOvJFWlyeYBZWyG': 'Татьяна.html',
-'zOhNKVTb00bHBokxKxc2': '王娜.html',
-'EAQAsPnyMtZ8y0Owhqgr': 'ユウコ.html',
-'ZlKqfkNhdq1YyVaRNFu2': '임수정.html',
-'B9bZVErvG7SQHSubQFvA': '李英姫.html',
-'MuwtwxTWN4IkCohfrRUr': 'มณีรัตน์.html',
-'OwbZMATsvk03BSuHlivA': 'गोमा.html',
-'uxC3rs7ZUvEkq0F8oOUR': 'Αλεξάνδρα.html',
-'XQaGukP8gxOdHJcEiDRk': 'Светлана.html',
-'9NfBpWBOhL5ZxIrTcRtO': '邓丽君.html',
-'Plp6xG6M6EG3q5MXUw8Z': 'Αθηνά.html',
-'iwiiAHPnPTpJqRu4QZBn': 'Тамара.html',
-'tmVywojMb7PF3N2NWCke': '李小龙.html',
-'eDmwUDwmfUCKeYfDKDBu': '미나.html',
-'o59vMEcEKHdfDu0jrdmy': '아라.html',
-'ekdnhtTmWcUjBBvzslGe': '冯雪琴.html',
-'dUzStZhoG9NhiU6GA5O5': 'Ксения.html',
-'EW9j8IUw1gqD7EAq32bJ': '장미숙.html',
-'4ku4haS2vCULuX6G8a3U': '에밀리아.html',
-'R1BsKQmokvKfnI9aj3Op': '王丽娜.html',
-'xKtsbORqSJQEEeXrmd1U': 'Κατερίνα.html',
-'kRgz1AEGeQjXbWeAtl8B': '克拉拉.html',
-'Dl1AZIL70FhmckJhyMqh': 'Наталья.html',
-'l8hvHEfRaYUE6bPqeypt': '피지아.html',
-'RYqnaWYRcNxEX6uY36X0': '에르나.html',
-'g80Hu3LdDfEjtaEUGxAT': '张婷.html',
-'m4eDlVmzV6TJ2SUyinYz': 'Юлия.html',
-'saWRCXO66yAlduZYAFdy': '刘明华.html',
-'F0di7pe8UzU00kSLzvpC': 'Шарлотта.html',
-'VdcdP9SypP6QwbdhKKjg': '양혜영.html',
-'TVcdxGWfFGkADxYf7WMG': '孙婷.html',
-'g625qEpjPxZD8GzNMGQV': 'Валентина.html',
-'Ed6psendIMYtURX3t1UM': '소영.html',
-'E7hIRy121VM5QgNsqLUt': '라희.html',
-'fXfCUCcrdVhoaXsAgGGE': '赵晴天.html',
-'BbKnv4eyX52Yi7hdDono': 'София.html',
-'uvaxJAXINjBp1Mtth2zZ': '미래.html',
-'miJEW4iSpLeAcbmTjs4Q': '白梅.html',
-'6wWGLwUTdNloPYf25qfl': 'Елена.html',
-'Di0HYey2FnKGnvygOs5N': '리나.html',
-'pX6c4y1R6GoeI7Dg73xm': '王丽.html',
-'e5gX8A8jYmpsPrkx0wuy': '소라.html',
-'Zc3PZqAqjGVobDjXN6MB': 'Татьяна.html',
-'201PXIJCRxqiSwCj4lFn': '이진영.html',
-'gZI4A49ED6OkEqc7bKVC': '나영.html',
-'08EBgswnzBTrl95ua1Kg': '冯晓慧.html',
-'VOOSBH60Rkg41OO0uskc': '알렉산드라.html',
-'FvwwY4JLgHm3JsFK8bgQ': '郑小英.html',
-'nCWZjLy4cWs0vlEPEDoV': '샤오메이.html'
-'qK15pqTDE8PApwFdmhYZ': 'Ελένη.html',
-'lY8Qf5vnnFWuGCRicIaA': 'Мария.html',
-'d1N42cfCZniYhgQIIsXx': '李娜.html',
-'G1BwZeXNRhNAP3pbNelO': 'さくら.html',
-'jJBLho6DWy4ow5EIpys7': '김지영.html',
-'q9GwAg7ngC9sSZ1pwy6y': '김영숙.html',
-'QNX0youv3uOi7jLeyOoG': 'นิตยา.html',
-'Y7PWALt37QWHZwDu1Fpf': 'सिता.html',
-'3aMGbv2cL4uKptunVVZL': 'アヤカ.html',
-'K0ipL9F64soThmlkser3': 'Анна.html',
-'NLX54pGjAX7rTZjvaYRs': '赵丽.html',
-'RMCN4lAW03orQWp38YCM': '静香.html',
-'fK1FrHZBXQZhJavbn8J1': 'Римма.html',
-'dFbooK3vVFks8bbjEOSj': '박선영.html',
-'u0Ml1DRKNeFm3TINIZtD': '리혜경.html',
-'iqoeeXmjHFhE4BOYvajG': 'เพ็ญศรี.html',
-'YoTsXGtASYfQUqtKXGFB': 'पार्वती.html',
-'6npSyypOdsZxBPpYZNXR': 'Χαρά.html',
-'xpJQLtOvJFWlyeYBZWyG': 'Татьяна.html',
-'zOhNKVTb00bHBokxKxc2': '王娜.html',
-'EAQAsPnyMtZ8y0Owhqgr': 'ユウコ.html',
-'ZlKqfkNhdq1YyVaRNFu2': '임수정.html',
-'B9bZVErvG7SQHSubQFvA': '李英姫.html',
-'MuwtwxTWN4IkCohfrRUr': 'มณีรัตน์.html',
-'OwbZMATsvk03BSuHlivA': 'गोमा.html',
-'uxC3rs7ZUvEkq0F8oOUR': 'Αλεξάνδρα.html',
-'XQaGukP8gxOdHJcEiDRk': 'Светлана.html',
-'9NfBpWBOhL5ZxIrTcRtO': '邓丽君.html',
-'Plp6xG6M6EG3q5MXUw8Z': 'Αθηνά.html',
-'iwiiAHPnPTpJqRu4QZBn': 'Тамара.html',
-'tmVywojMb7PF3N2NWCke': '李小龙.html',
-'eDmwUDwmfUCKeYfDKDBu': '미나.html',
-'o59vMEcEKHdfDu0jrdmy': '아라.html',
-'ekdnhtTmWcUjBBvzslGe': '冯雪琴.html',
-'dUzStZhoG9NhiU6GA5O5': 'Ксения.html',
-'EW9j8IUw1gqD7EAq32bJ': '장미숙.html',
-'4ku4haS2vCULuX6G8a3U': '에밀리아.html',
-'R1BsKQmokvKfnI9aj3Op': '王丽娜.html',
-'xKtsbORqSJQEEeXrmd1U': 'Κατερίνα.html',
-'kRgz1AEGeQjXbWeAtl8B': '克拉拉.html',
-'Dl1AZIL70FhmckJhyMqh': 'Наталья.html',
-'l8hvHEfRaYUE6bPqeypt': '피지아.html',
-'RYqnaWYRcNxEX6uY36X0': '에르나.html',
-'g80Hu3LdDfEjtaEUGxAT': '张婷.html',
-'m4eDlVmzV6TJ2SUyinYz': 'Юлия.html',
-'saWRCXO66yAlduZYAFdy': '刘明华.html',
-'F0di7pe8UzU00kSLzvpC': 'Шарлотта.html',
-'VdcdP9SypP6QwbdhKKjg': '양혜영.html',
-'TVcdxGWfFGkADxYf7WMG': '孙婷.html',
-'g625qEpjPxZD8GzNMGQV': 'Валентина.html',
-'Ed6psendIMYtURX3t1UM': '소영.html',
-'E7hIRy121VM5QgNsqLUt': '라희.html',
-'fXfCUCcrdVhoaXsAgGGE': '赵晴天.html',
-'BbKnv4eyX52Yi7hdDono': 'София.html',
-'uvaxJAXINjBp1Mtth2zZ': '미래.html',
-'miJEW4iSpLeAcbmTjs4Q': '白梅.html',
-'6wWGLwUTdNloPYf25qfl': 'Елена.html',
-'Di0HYey2FnKGnvygOs5N': '리나.html',
-'pX6c4y1R6GoeI7Dg73xm': '王丽.html',
-'e5gX8A8jYmpsPrkx0wuy': '소라.html',
-'Zc3PZqAqjGVobDjXN6MB': 'Татьяна.html',
-'201PXIJCRxqiSwCj4lFn': '이진영.html',
-'gZI4A49ED6OkEqc7bKVC': '나영.html',
-'08EBgswnzBTrl95ua1Kg': '冯晓慧.html',
-'VOOSBH60Rkg41OO0uskc': '알렉산드라.html',
-'FvwwY4JLgHm3JsFK8bgQ': '郑小英.html',
-'nCWZjLy4cWs0vlEPEDoV': '샤오메이.html'
-'rPv6X2bplAl0GsRt9zyF': 'Ελένη.html',
-'Zd7vK1q2fb2okMbYs8i3': 'Мария.html',
-'JbL4Zz31i0zx94P7eODf': '李娜.html',
-'Jl5vh0LMqNl4kzqfg4h9': 'さくら.html',
-'Ybh2g7KdGmO1rV9tpu7I': '김지영.html',
-'Xn7lXZ2uC9Vw1JdI9dms': '김영숙.html',
-'oUyV0J1oM9pSlH9GjG30': 'นิตยา.html',
-'w4L3vZTjmUzjR8chKbJ2': 'सिता.html',
-'Iz4h5LRmDskA7Xo1OpwY': 'アヤカ.html',
-'MK0AP8pZAYTtqg9J0IW4': 'Анна.html',
-'tCrDTt8Nd3ZYXZqHoNXg': '赵丽.html',
-'r1Z9aZsEIo9pxBxlH61L': '静香.html',
-'gtEjW7A2XryotX3rjzOA': 'Римма.html',
-'b1FbRU8S9jkWyRkKZL2z': '박선영.html',
-'0TcQbr62UyxNvjXJ2owI': '리혜경.html',
-'kjL8m0Vn2rk9g3dtiPbG': 'เพ็ญศรี.html',
-'k9X7vqR3YeXbfa1G3irN': 'पार्वती.html',
-'oRO1E2P0DkjfGVu8FqXj': 'Χαρά.html',
-'TbxuW8dPV9Gb2cJzTx4r': 'Татьяна.html',
-'z1V5lLqgBb7o3k4Ao6GF': '王娜.html',
-'J7vWAW2qeNxh9fYlIcTC': 'ユウコ.html',
-'X1wLGh8jFmyvbBoKh7kg': '임수정.html',
-'HaVm6u6RFLtW4LoIlOfV': '李英姫.html',
-'ow0uYmnwJZr8FPc0g93A': 'มณีรัตน์.html',
-'XjXw2I95pz80RPu9QVAu': 'गोमा.html',
-'7Xs7gwj34FgHgW1yMLys': 'Αλεξάνδρα.html',
-'1mMKxIJGbpmcVFn7j1rN': 'Светлана.html',
-'oGz5mbi9jP4v47DNQLc1': '邓丽君.html',
-'9hFGdREY8m9p1zo4BCS6': 'Αθηνά.html',
-'PCj9l2S0vI4v3gQt9gLs': 'Тамара.html',
-'IzmnT1x9fHW6qg4Hf1Yd': '李小龙.html',
-'vOQw0Z43t58jlYkNTpdT': '미나.html',
-'2mZX7xU8EKlHgqViRTNp': '아라.html',
-'1z0D5yQczJ7zPHFMkOuF': '冯雪琴.html',
-'p3K1Y7MI5GOT0tvdb2ov': 'Ксения.html',
-'WxZ2yIKBz9GOl5D83lMI': '장미숙.html',
-'r0Jfh5P3A4z8I5fStpuV': '에밀리아.html',
-'V3yQ5Ekn2hFH0pZW0smA': '王丽娜.html',
-'0mwT8vZ11Uo4HY1vdehz': 'Κατερίνα.html',
-'QR8ghPloOsTY3bLezc5j': '克拉拉.html',
-'2mEprF1YPx7Sz5vw9fu5': 'Наталья.html',
-'7U2aE80ONYPotybwq58I': '피지아.html',
-'V9bYqKN9xjf1r3IiM9t0': '에르나.html',
-'mwNTd8l6RxmcC7qYr91H': '张婷.html',
-'Q9O6nmtz0U8Ff7lE9lZj': 'Юлия.html',
-'jsI8o2B0tuw4dXs3X0DR': '刘明华.html',
-'n1xyF5cu4DgC9tOgh71A': 'Шарлотта.html',
-'t0tF0YHrrL2JmoMbqf5o': '양혜영.html',
-'P2bWI5EG6Qh0f2kA39rb': '孙婷.html',
-'Z5tm2yNi9WRxYuFCVRc4': 'Валентина.html',
-'qHklZp9kCzD3Gs01V0bI': '소영.html',
-'BuK7nRS8ht76gqfdLxZf': '라희.html',
-'FEtiQ79O0C1xY9dF8Ywq': '赵晴天.html',
-'Bs2sH8c9vFwPrNhdi7Zv': 'София.html',
-'GrXz4dpa5kIFwv9vAw2H': '미래.html',
-'9fnsw37Wwmy3yGABcEO7': '白梅.html',
-'F9NzxqZczMIElkIU24Jr': 'Елена.html',
-'o4sj2dH1VpB7mPx0t6lA': '리나.html',
-'X3Qhmy8JzBeYvN9jzH5a': '王丽.html',
-'R0dy7zw15x2oFJlGfDrm': '소라.html',
-'MbV2d5Dh8O1ncb3ZnFfI': 'Татьяна.html',
-'o2F3i9Z8ydRmnVj4h9VX': '이진영.html',
-'bs0XZxTjQ5mykLOJovkn': '나영.html',
-'OHROiIWJg7XvFC9nIK2r': '冯晓慧.html',
-'q2kF2HLp8PRGB02qBliP': '알렉산드라.html',
-'3q7mrCGLjQX0z4tHjQ5u': '郑小英.html',
-'glHwJ8l60YsOGf9eCXm5': '샤오메이.html'
-'rPv6X2bplAl0GsRt9zyF': 'Ελένη.html',
-'Zd7vK1q2fb2okMbYs8i3': 'Мария.html',
-'JbL4Zz31i0zx94P7eODf': '李娜.html',
-'Jl5vh0LMqNl4kzqfg4h9': 'さくら.html',
-'Ybh2g7KdGmO1rV9tpu7I': '김지영.html',
-'Xn7lXZ2uC9Vw1JdI9dms': '김영숙.html',
-'oUyV0J1oM9pSlH9GjG30': 'นิตยา.html',
-'w4L3vZTjmUzjR8chKbJ2': 'सिता.html',
-'Iz4h5LRmDskA7Xo1OpwY': 'アヤカ.html',
-'MK0AP8pZAYTtqg9J0IW4': 'Анна.html',
-'tCrDTt8Nd3ZYXZqHoNXg': '赵丽.html',
-'r1Z9aZsEIo9pxBxlH61L': '静香.html',
-'gtEjW7A2XryotX3rjzOA': 'Римма.html',
-'b1FbRU8S9jkWyRkKZL2z': '박선영.html',
-'0TcQbr62UyxNvjXJ2owI': '리혜경.html',
-'kjL8m0Vn2rk9g3dtiPbG': 'เพ็ญศรี.html',
-'k9X7vqR3YeXbfa1G3irN': 'पार्वती.html',
-'oRO1E2P0DkjfGVu8FqXj': 'Χαρά.html',
-'TbxuW8dPV9Gb2cJzTx4r': 'Татьяна.html',
-'z1V5lLqgBb7o3k4Ao6GF': '王娜.html',
-'J7vWAW2qeNxh9fYlIcTC': 'ユウコ.html',
-'X1wLGh8jFmyvbBoKh7kg': '임수정.html',
-'HaVm6u6RFLtW4LoIlOfV': '李英姫.html',
-'ow0uYmnwJZr8FPc0g93A': 'มณีรัตน์.html',
-'XjXw2I95pz80RPu9QVAu': 'गोमा.html',
-'7Xs7gwj34FgHgW1yMLys': 'Αλεξάνδρα.html',
-'1mMKxIJGbpmcVFn7j1rN': 'Светлана.html',
-'oGz5mbi9jP4v47DNQLc1': '邓丽君.html',
-'9hFGdREY8m9p1zo4BCS6': 'Αθηνά.html',
-'PCj9l2S0vI4v3gQt9gLs': 'Тамара.html',
-'IzmnT1x9fHW6qg4Hf1Yd': '李小龙.html',
-'vOQw0Z43t58jlYkNTpdT': '미나.html',
-'2mZX7xU8EKlHgqViRTNp': '아라.html',
-'1z0D5yQczJ7zPHFMkOuF': '冯雪琴.html',
-'p3K1Y7MI5GOT0tvdb2ov': 'Ксения.html',
-'WxZ2yIKBz9GOl5D83lMI': '장미숙.html',
-'r0Jfh5P3A4z8I5fStpuV': '에밀리아.html',
-'V3yQ5Ekn2hFH0pZW0smA': '王丽娜.html',
-'0mwT8vZ11Uo4HY1vdehz': 'Κατερίνα.html',
-'QR8ghPloOsTY3bLezc5j': '克拉拉.html',
-'2mEprF1YPx7Sz5vw9fu5': 'Наталья.html',
-'7U2aE80ONYPotybwq58I': '피지아.html',
-'V9bYqKN9xjf1r3IiM9t0': '에르나.html',
-'mwNTd8l6RxmcC7qYr91H': '张婷.html',
-'Q9O6nmtz0U8Ff7lE9lZj': 'Юлия.html',
-'jsI8o2B0tuw4dXs3X0DR': '刘明华.html',
-'n1xyF5cu4DgC9tOgh71A': 'Шарлотта.html',
-'t0tF0YHrrL2JmoMbqf5o': '양혜영.html',
-'P2bWI5EG6Qh0f2kA39rb': '孙婷.html',
-'Z5tm2yNi9WRxYuFCVRc4': 'Валентина.html',
-'qHklZp9kCzD3Gs01V0bI': '소영.html',
-'BuK7nRS8ht76gqfdLxZf': '라희.html',
-'FEtiQ79O0C1xY9dF8Ywq': '赵晴天.html',
-'Bs2sH8c9vFwPrNhdi7Zv': 'София.html',
-'GrXz4dpa5kIFwv9vAw2H': '미래.html',
-'9fnsw37Wwmy3yGABcEO7': '白梅.html',
-'F9NzxqZczMIElkIU24Jr': 'Елена.html',
-'o4sj2dH1VpB7mPx0t6lA': '리나.html',
-'X3Qhmy8JzBeYvN9jzH5a': '王丽.html',
-'R0dy7zw15x2oFJlGfDrm': '소라.html',
-'MbV2d5Dh8O1ncb3ZnFfI': 'Татьяна.html',
-'o2F3i9Z8ydRmnVj4h9VX': '이진영.html',
-'bs0XZxTjQ5mykLOJovkn': '나영.html',
-'OHROiIWJg7XvFC9nIK2r': '冯晓慧.html',
-'q2kF2HLp8PRGB02qBliP': '알렉산드라.html',
-'3q7mrCGLjQX0z4tHjQ5u': '郑小英.html',
-'glHwJ8l60YsOGf9eCXm5': '샤오메이.html',
-'K2lIg64gNjGV03AqLsGZ': 'Алина.html',
-'1iTwFQGKn0Sv6dMPTpa5': '李晓红.html',
-'R3Xu7q2FGo8bx1d2Ezy8': '사라.html',
-'6Wp8TKuNr09ZVio02P0L': 'Евгения.html',
-'p0hb3Yldh97Jl5mV1BcQ': 'ナオコ.html',
-'1rd00frN7T2Vv3XauYkj': 'Ирина.html',
-'Zn6J0s0ylvH7ua39iO2k': '마리아.html',
-'F9j96ey8tHEA7P2JofTL': '芮妮.html',
-'Kz4Vx3Gi7CRbU2HsePR0': 'Томара.html',
-'J1hATJ5y56Nmu40HzKvn': '한나.html',
-'j2V3mcSk0VtA3k4zi7Gb': '王小妹.html',
-'LDV7rfNRuOp7ldKOqX2J': '루시아.html',
-'3j4hD3NVyU5aZ64btXvT': '胡琳琳.html',
-'bI6vXjZoTw0wz5FybdpJ': '利奥娜.html',
-'tB5d7Pzmn35gKvUdLVs0': 'Ева.html',
-'R6Q4AxU2GNs9Gm5hZxi6': '林子萱.html',
-'H1O4x5hlzKNS2aEYiFO7': 'ラウラ.html',
-'7cS98d6Zp32pF1ntmVwh': 'Мирослава.html',
-'0EzFuy03Vpkl1GA7stM0': '패트리샤.html',
-'F39W8kZX6l5KuvQZbfJ9': 'Нина.html',
-'Y4H93kzJ0l6g5V1x3F9n': 'Natalia.html',
-'J8E1zA7uZ2Lw0kB6p4I3': '菊池彩香.html',
-'RxX9g62Y4H3fT0v7bJpA': '사라정.html',
-'H3s4R7t1V9f5wZ6k9Na6': '娜美.html',
-'8P7O3dK4l5u6z1vZ0tWp': 'Diana.html',
-'0V5zQy6S1tW9n3k4oXkR': '玛丽莎.html',
-'Z0gJ5Y2Qq49m0R2V6Vs5': 'Ирина Петровна.html',
-'Y1t6m0j3O5R4KXz8V0vQ': '주인공.html',
-'5rT6xY4F9Ls0QhN0u9vD': 'Анна Лисова.html',
-'V7hX2g0gF9Cq7k3F5sP7': '山田美咲.html',
-'P0e8t6fW9h1F3N2kR5v2': '翠莲.html',
-'T1h0P9Xz4L7gV1n2y3A7': 'Юлиана.html',
-'8u0R9Z2v3JgH7y4XQp9t': '莉莉安娜.html',
-'V8a1Z4k0U6h2fP5NqLk0': '멜로디.html',
-'9Q5d7J2pO1B6H3y5xF3X': '沈婷.html',
-'t8r7F2P9B5jI3xS1q0e6': '李蓓蓓.html',
-'K7G6d3Xr9J4hT1i8F5v4': '내린다.html',
-'Y3w9u5rQ7L9kT5I3z1N0': 'Грета.html',
-'J9X0k2g1W6s3H2f8B7y0': '秋田光.html',
-'0r7e6Z5hF9w1X6P8kQJ5': '达娜.html',
-'P3X9q5V0b7l4dF2T3V3w': 'Наталья Волкова.html',
-'2F0t5Y7WqB9R1N8l3Z7w': '玲奈.html',
-'A7P3X9e0Yk8rL5o2gF1p': '고미경.html',
-'Q0a9z1l4H8yF5G3t0M2w': '王晓英.html',
-'L9s7P2J3D5o1u8fN7B9w': '파리나.html',
-'tX2m9I1F8pW3J7Q5dY9k': 'Катя.html',
-'7P3f4d8G6k5sX0M1q9I2': '린시아.html',
-'9R0m8o4t2X2h7G6v1Lz0': '阮怡君.html',
-'X0b3y5F7P4L1tN2s8g6Y': '카르멘.html',
-'8v9h2F6t7X0sW4z1Jr0Y': 'Магда.html',
-'2Y9R1V0L5F6vZ8J3w4m9': '김슬기.html',
-'5I2J0zT4k9oQ6l5p9V0b': '陈雪芳.html',
-'R7e2L9X3u6V5tW1K0pG0': '玛丽亚娜.html',
-'V3m5P9t8F7h2R9n1Z6I4': '소영수.html',
-'Y8t9r6wF0K2m5X7z3g1W': '珠丽娜.html',
-'9Jr2Z0Y3fF1m0B8V9xg0': 'Роза.html',
-'t5X0o7Z4b2hV6Q9P9e7K': '유선영.html',
-'3N7aF8B2Y0t5lZ3P0w0b': '石田真理子.html',
-'M9gX3t7qF8d1o6Z2W5V1': 'Петра.html',
-'6Vt2o9Z5f5pY0H1Q8Jw4': '소란한.html',
-'X1F3m7Y9k8pT5r4J0L9Q': '张宏伟.html',
-'F0e9X3k6r8J4B1N7y9M2': '바바라.html',
-'J8z0v7o5Y3B6u9mP4L1W': '디디.html',
-'9R7g5t2X4L1B3P8J2s8q': '홍진호.html',
-'Y2l9F1b6rP3eJ4z0N7Wk': '喬安娜.html',
-'R8X1f2d9V0q5P3n6T7Y0': 'Лаура.html',
-'V0q9B8o7Z3lJ2t5N4w8P': 'ジーナ.html',
-'2yL8W7P1v5r9I2T6Xq9O': '엠마.html',
-'5F0L2v9t7P3J0w4b8Y9v': '蒋美玲.html',
-'V3G8R9b5z1lY2n6t0m0T': '카를라.html',
-'8Z5t4P7r0X2q9L0v1J6R': 'Sofia.html',
-'J1w5V6X2z0B7y8t3P1r2': '李兰兰.html',
-'F7b8g2pX9k3V6rT5m9o1': '손민정.html',
-'Z6t0m1V3y9o0L4f5F2k6': 'Elena.html',
-'J3P9o5L0q7V1tX2R8y0P': '凯瑟琳.html',
-'6V9y4d3P7rY5X6M8N0K2': 'Ольга.html',
-'F5Z8R0L2p7I4q9y3gK1b': 'ユリア.html',
-'V2o7J0z3b5L9Y1k8qF3w': '리사해병대.html',
-'Y4g6X9p3d8B0q1t2F7j6': '강호정.html',
-'Z3m5F7b2T9p0I4hQ6B0z': '马丽娜.html',
-'Y6n7vP1q9L2X0t8g0hB5': 'Эмилия.html',
-'F9P2B8Z6V0r5H3t1k9m0': '세리나.html',
-'Z5oP0M1X9g7F3tY2K4R9': '聂小薇.html',
-'Q3m0fV4t7d8Y1Z1I2wG9': '카밀라.html',
-'J1f9R7p0Y8oV3b0m4T9Z': 'Клавдия.html',
-'7rZ9X3m0t8K4g5l3F9J2': '홍성주.html',
-'5hZ0t6r9X3o2Q9K8n1L2': '阿兰娜.html',
-'0kG3y7z6V8B4p5I9F2o1': '후지코.html',
-'2Z7L1g8X9p3B0V0t3yN4': '卡拉.html',
-'9F3r8tL0z6P1Y0o7m9X2': 'Tatyana.html',
-'V4y0Z2rX6B1g9P3t8m0N': 'カナコ.html',
-'Q6e9t2K8X7wJ0oF9l2T0': 'Li Yuqing.html',
-'Z9f8r5K7Y2d6B9W8j4g3': '白雪.html',
-'Y2f3T7R9V4p0X1z8B6g7': 'Светлана.html',
-'P0Q2z9V8y7w6L5f1g8X0': '지선영.html',
-'F7M2d5Y1P9q8K6L3X2W': '娜塔莉亚.html',
-'J4l5t9P3Y1k9b0Z0fX7r': '페리시안.jpg',
-'V0Z1r6P9d8J2t7oF5lX8': 'Камила.html',
-'B9H3g5P0L7j4F9t0X8y0': '瑶瑶.html',
-'Y3m9r0K2N7p5Q1F8z2L8': 'Анжела.html',
-'Z8T2F9v1p5d3R4Y0L6k8': '홍슬기.html',
-'Q4Y3z9F1R0T6g0L7W1h2': '宫美玲.html',
-'5B3o9g4P2v0rX6m7F9k1': '이민정.html',
-'J9Y0k1zF3N2t7G8l5W0r': 'София.html',
-'T8k6N0l7Q1rP2F5z9g9Y': '백가빈.html',
-'X1f0g9V7P6K2mL3Z8y7O': 'Милена.html',
-'V5b3t6F9Z8Y2p7m1K4J9': '郭婷婷.html',
-'R0K9h3Z7L5f8X9Y4b1g2': '仁美.jpg',
-'F8K0t3y1B9p6Z7R9oX2V': '한유진.html',
-'P5h3X0R7V2k9Y4z6f9N0': 'Дарина.html',
-'J4L2b0F1p7Y9r3X6o2g9': 'Yuka.html',
-'R8Y0P3V5Z2g9mL7J1o0F': '玛莎.html',
-'F0B7Y2g3V9P8r5W1t0k3': '姜娜娜.html',
-'X9L0y3r5V7p1K2T8oF2y': '소니아.html',
-'Z4m9T7F5V2r1K0g8X6J3': '娜拉.html',
-'P1f6T8Q9z2L7y9B3oX0N': '타마라.html',
-'J5X2z1R0B9o7L4m8T9k3': 'Ольга Петровна.html',
-'Y2Z0f3P6K9W5r1X9t0m7': '반지혜.html',
-'B3p6F1V8r9Y0L7tX2g4z': 'Мелисса.html',
-'Z5T7o6b9P1k0L3Q8F2Y0': '莉莉安娜.html',
-'R3X0y6V7g1p5T9L2f8Y3': '石川真理子.html',
-'V1f7R0k5P9B8T4Q3L0y6': 'Надежда.html',
-'Y0X2V9r7F4k1L3p9N0t5': '정미경.html',
-'B6Q1t9P5Z0L7Y4g3N2F3': 'Tia.html',
-'X9P7t1V4B0m0L2o6y8K9': '은주지니.html',
-'J8R7g5f3V2L1Y9X0p7B1': 'Tatiana.html',
-'F3o1T9V8P5R2m6K0Y7L7': 'Angela.html',
-'P2B1y9K8V7Z0t3L6g0F7': 'Ольга Васильева.html',
-'Y6r7M9P1F0L3V8T2z5G0': 'Lucia.html',
-'X1p6Z7y2V5T9f4L3Q2P0': '김은지.html',
-'V8g0Y1t6R9P5X0m2F7B3': 'Diana22.html',
-'R9p2L0X8F6T3m5Y1V2Q7': 'Яна.html',
-'Y0F8p1g5L9V4B3X7R2J9': '杨丽华.html',
-'Q1X8f9V5T2p6Z7B9L0K0': '성지윤.html',
-'J9t3r7G8P0X6v5Y1B2F7': 'Александра.html',
-'P3m1B0yV9L2F7g8X1r4V': '翡翠.html',
-'B8P1T7g0X3Z6m4V2Y5L0': '한지은.html',
-'X9B7F2R1L0p6Y4T8J3V0': '娜丽.html',
-'V1J7P3X9K5B6oL2Y8F3p': 'Миракл.html',
-'R0Y1L9T7g2K5F6P3V8X0': '장미림.html',
-'Y0t8V5P1L9r6X3B4Q7R9': 'Кира.html',
-'B3K9L0p5X7V1R8T0F6g3': '사비나.html',
-'X0t7R1Y5K2P9B9V3F6L8': '玛格丽特.html',
-'J5V8T7P0K6L3R2X9F9y9': '艾米丽.html',
-'P7B9L6V2X5Y0R1g3T0t8': 'Ирина Романова.html',
-'B6P9X1T0F2R7Y0K9V8m2': '刘婷婷.html',
-'X3P5Y1V2R0L7T9b9J8F0': '올리비아.html',
-'V4K0Y7L5F3R6p9Z2X1P1': 'Нина.html',
-'R9V8L2X5P0T6Y3B1J0m9': '소피아.html',
-'Y0F3K8R2P9B1V4T7g7X1': 'Gemma.html',
-'P5L9R1X3V7F0T6Y0B8K0': '샬롯.html',
-'B2Y0T9K6V1F7X3L5P4R1': 'Olga.html',
-'X7V0B9T8P2F6R3K5Y1L2': '玉莲.html',
-'J5P2T6Y7V1K9X0B4R0L0': '단비한종석.html',
-'P1B8T7Y9V6X0L2K3R5g0': 'Шарлотта.html',
-'V7B0X8P9Y3T2L6R4F1J0': '森澄子.html',
-'R2Y6V3B7P9K0X4F1T9L8': '루시아.html',
-'B8P1Y7V0X3R9L2F4K0J5': 'Катя Иванова.html',
-'X2F9L7Y1R5P6V0T8B0K3': '瑶香.html',
-'Y3V9K0X5P2R6L8F7T0B2': '엘레나.html',
-'P5R9T1B2X7K0V6L9Y8F3': '玛丽娜 李.html',
-'V0X6Y3P9F2T4R8L5J9B1': '아이린.html',
-'R9P2V5K6X0L3T8F7Y0B0': '冯婷婷.html',
-'Y0P9T8L5F3K2R7V1B6X0': 'Tessa.html',
-'B7F6Y1X0P2T9V4R3K0L9': '莎莉.html',
-'Y8R0X3L5P7B2V6T9F1K9': '娜娜.html',
-'J9F5V1X8K7P2R6B3Y0T0': 'Татьяна Петрова.html',
-'B5X0Y3V9T1R6P4L7F8K0': '明美.html',
-'V2R9P8X1T0L3K7Y5F6B0': 'Даша.html',
-'R4T2X9Y1F0P7L3V8K5B0': '林慧慧.html',
-'Y3B5F0P2V1R6T9X7K8L0': 'Юлия Иванова.html',
-'P7X5R0Y1V6F3K2L8T9B9': '마리안느.html',
-'V0P5R6T3Y1B9X2F7L8K0': '玛丽亚娜 戴维森.html',
-'R2Y8T5V9X0K1P3B6L0F7': '지혜하림.html',
-'B7R3Y0X6V2K9L5T1F0P9': '安娜.王.html',
-'V9T0X5R2Y3B8K1L7P6F9': '卢娜.html',
-'R6X7P3V1Y2T0L9F5K8B2': '维多利亚·瓦西里耶娃.html',
-'J2P8V3X1B0Y9K4T6F5R0': '박수경.html',
-'Y4F2R6P9T0X3B7K1V1L0': '玉华.李.html',
-'B5R2X7V0T9P6L8Y1F0K4': 'Милада.html',
-'R9V2P8T5X0Y7L3F1K6B9': '김선희.html',
-'V1T8B5P3R7X0Y9K6L2F0': '모리.미즈키.html',
-'J0P7X5V3Y6F9T2L8K1B4': 'Екатерина .Карпова.html',
-'P5V9T0R7X3K2Y8F1L4B6': '멜리사 윌리엄즈.html',
-'B1T2Y9R5X0F7P6V8K3L0': '马丽娅·谢尔盖耶娃.html',
-'V3Y0R9X1F7T6P8B2K9L5': '미나.코바야시.html',
-'R4X5V0Y2T9P7L1B8F3K9': '夏丽达·金塔.蒋.html',
-'J9F2V5R7T1B6K0X8P3Y3': '安娜·卡尔托姆.html',
-'Y1P6V0R7X9K3B2F5T3L8': '소피아·李.洪'.html',
-'V8X0R9T6Y5P7B1L3F2K9': '안녕하세요 주인님.html',
-'R0B9P7V3Y2K4X5T1F6L8': '오피스처리시설소음적인사례.html',
-'B1Y8T3F0X9P4L5V7R2K3': '니키엘리슨의가상진료출연3일반의서비스지금까지최고혜택입니다.html',
-'V8R3B5X0Y7P1T6F2L9K3': '미나 구스다이스.태평바닷가집이된고급펜션임.html',
-'R6X7T3Y5B9V0F2P8K4L1': '알고싶다면계좌잇는걸해놓고계산하거나프리미엄서비스시간이되여달성할수있었네요.max심사때까지
-      // Tambahkan kode lainnya sesuai kebutuhan
-    };
-
-    // Membuat efek matrix
-    function createMatrix() {
-      const matrix = document.getElementById('matrix');
-      const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
-      
-      // Membuat kolom-kolom di layar
-      for (let i = 0; i < 100; i++) {
-        let span = document.createElement('span');
-        span.textContent = characters.charAt(Math.floor(Math.random() * characters.length));
-        span.style.left = `${Math.random() * 100}vw`;
-        matrix.appendChild(span);
-      }
-    }
-
-    // Validasi kode dan arahkan ke halaman terkait
-    function validateCode() {
-      const accessCode = document.getElementById("accessCode").value;
-      const errorMessage = document.getElementById("errorMessage");
-
-      // Cek apakah kode valid
-      if (validCodes[accessCode]) {
-        // Arahkan ke halaman yang sesuai
-        window.location.href = validCodes[accessCode];
-      } else {
-        // Tampilkan pesan error jika kode tidak valid
-        errorMessage.textContent = "Kode akses tidak valid, coba lagi.";
-      }
-    }
-
-    // Mulai efek matrix saat halaman dimuat
-    createMatrix();
-  </script>
+    <div class="container">
+        <h1>Welcome to the Matrix-Themed Website</h1>
+        <ul>
+            <li><a href="html/Ελένη.html">Ελένη</a></li>
+            <li><a href="html/Мария.html">Мария</a></li>
+            <li><a href="html/李娜.html">李娜</a></li>
+            <li><a href="html/さくら.html">さくら</a></li>
+            <li><a href="html/김지영.html">김지영</a></li>
+            <li><a href="html/김영숙.html">김영숙</a></li>
+            <li><a href="html/นิตยา.html">นิตยา</a></li>
+            <li><a href="html/सिता.html">सिता</a></li>
+            <li><a href="html/アヤカ.html">アヤカ</a></li>
+            <li><a href="html/Анна.html">Анна</a></li>
+            <li><a href="html/赵丽.html">赵丽</a></li>
+            <li><a href="html/静香.html">静香</a></li>
+            <li><a href="html/Римма.html">Римма</a></li>
+            <li><a href="html/박선영.html">박선영</a></li>
+            <li><a href="html/리혜경.html">리혜경</a></li>
+            <li><a href="html/เพ็ญศรี.html">เพ็ญศรี</a></li>
+            <li><a href="html/पार्वती.html">पार्वती</a></li>
+            <li><a href="html/Χαρά.html">Χαρά</a></li>
+            <li><a href="html/Татьяна.html">Татьяна</a></li>
+            <li><a href="html/王娜.html">王娜</a></li>
+            <li><a href="html/ユウコ.html">ユウコ</a></li>
+            <li><a href="html/임수정.html">임수정</a></li>
+            <li><a href="html/李英姬.html">李英姬</a></li>
+            <li><a href="html/มณีรัตน์.html">มณีรัตน์</a></li>
+            <li><a href="html/गोमा.html">गोमा</a></li>
+            <li><a href="html/Αλεξάνδρα.html">Αλεξάνδρα</a></li>
+            <li><a href="html/Светлана.html">Светлана</a></li>
+            <li><a href="html/邓丽君.html">邓丽君</a></li>
+            <li><a href="html/Αθηνά.html">Αθηνά</a></li>
+            <li><a href="html/Тамара.html">Тамара</a></li>
+            <li><a href="html/李小龙.html">李小龙</a></li>
+            <li><a href="html/미나.html">미나</a></li>
+            <li><a href="html/아라.html">아라</a></li>
+            <li><a href="html/冯雪琴.html">冯雪琴</a></li>
+            <li><a href="html/Ксения.html">Ксения</a></li>
+            <li><a href="html/장미숙.html">장미숙</a></li>
+            <li><a href="html/에밀리아.html">에밀리아</a></li>
+            <li><a href="html/王丽娜.html">王丽娜</a></li>
+            <li><a href="html/Κατερίνα.html">Κατερίνα</a></li>
+            <li><a href="html/克拉拉.html">克拉拉</a></li>
+            <li><a href="html/Наталья.html">Наталья</a></li>
+            <li><a href="html/피지아.html">피지아</a></li>
+            <li><a href="html/에르나.html">에르나</a></li>
+            <li><a href="html/张婷.html">张婷</a></li>
+            <li><a href="html/Юлия.html">Юлия</a></li>
+            <li><a href="html/刘明华.html">刘明华</a></li>
+            <li><a href="html/Шарлотта.html">Шарлотта</a></li>
+            <li><a href="html/양혜영.html">양혜영</a></li>
+            <li><a href="html/孙婷.html">孙婷</a></li>
+            <li><a href="html/Валентина.html">Валентина</a></li>
+            <li><a href="html/소영.html">소영</a></li>
+            <li><a href="html/라희.html">라희</a></li>
+            <li><a href="html/赵晴天.html">赵晴天</a></li>
+            <li><a href="html/София.html">София</a></li>
+            <li><a href="html/미래.html">미래</a></li>
+            <li><a href="html/白梅.html">白梅</a></li>
+            <li><a href="html/Ελένη_2.html">Ελένη_2</a></li>
+            <li><a href="html/丹尼尔.html">丹尼尔</a></li>
+            <li><a href="html/نادية.html">نادية</a></li>
+            <li><a href="html/柏拉图.html">柏拉图</a></li>
+            <li><a href="html/גילת.html">גילת</a></li>
+            <li><a href="html/陆婷.html">陆婷</a></li>
+            <li><a href="html/Katia.html">Katia</a></li>
+            <li><a href="html/זואי.html">זואי</a></li>
+            <li><a href="html/비안카.html">비안카</a></li>
+            <li><a href="html/Xiang Li.html">Xiang Li</a></li>
+            <li><a href="html/קמיל.html">קמיל</a></li>
+            <li><a href="html/מרים.html">מרים</a></li>
+            <li><a href="html/Zhen Hua.html">Zhen Hua</a></li>
+            <li><a href="html/Elif.html">Elif</a></li>
+            <li><a href="html/สาวิตรี.html">สาวิตรี</a></li>
+            <li><a href="html/เสาวลักษณ์.html">เสาวลักษณ์</a></li>
+            <li><a href="html/Naima.html">Naima</a></li>
+            <li><a href="html/Αλίκη.html">Αλίκη</a></li>
+            <li><a href="html/Катя.html">Катя</a></li>
+            <li><a href="html/재희.html">재희</a></li>
+            <li><a href="html/英俊.html">英俊</a></li>
+            <li><a href="html/Li Fang.html">Li Fang</a></li>
+            <li><a href="html/Đào Linh.html">Đào Linh</a></li>
+            <li><a href="html/碧云.html">碧云</a></li>
+            <li><a href="html/Soledad.html">Soledad</a></li>
+            <li><a href="html/Céline.html">Céline</a></li>
+            <li><a href="html/מלכה.html">מלכה</a></li>
+            <li><a href="html/王丽.html">王丽</a></li>
+            <li><a href="html/محمد.html">محمد</a></li>
+            <li><a href="html/ויקטוריה.html">ויקטוריה</a></li>
+            <li><a href="html/林晓明.html">林晓明</a></li>
+            /נועה.html">נועה</a></li>
+            <li><a href="html/الينا.html">الينا</a></li>
+            <li><a href="html/Рената.html">Рената</a></li>
+            <li><a href="html/دمشق.html">دمشق</a></li>
+            <li><a href="html/クロエ.html">クロエ</a></li>
+            <li><a href="html/लक्ष्मी.html">लक्ष्मी</a></li>
+            <li><a href="html/Надежда.html">Надежда</a></li>
+            <li><a href="html/Грета.html">Грета</a></li>
+            <li><a href="html/דנה.html">דנה</a></li>
+            <li><a href="html/Olga.html">Olga</a></li>
+            <li><a href="html/Aiko.html">Aiko</a></li>
+            <li><a href="html/Asuka.html">Asuka</a></li>
+            <li><a href="html/Anastasia.html">Anastasia</a></li>
+            <li><a href="html/גולדה.html">גולדה</a></li>
+        </ul>
+    </div>
 </body>
 </html>
